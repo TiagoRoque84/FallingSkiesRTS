@@ -1,76 +1,58 @@
-# Plano de execução
+# Plano executado — versão 1.0
 
-Atualização: 7 de setembro de 2026. Estado: preparação concluída, download de dependências aguardando autorização.
+Atualização: 7 de setembro de 2026. Estado: implementação e exportação concluídas; evidências em [TESTES.md](TESTES.md).
 
-## Preparação executada
+## Etapa 0 — Preparação
 
-- [x] Ler a especificação original sem modificar o arquivo.
-- [x] Inspecionar a pasta de trabalho: continha somente o documento original.
-- [x] Verificar ferramentas no PATH e procurar Godot nas pastas comuns de programas, Downloads, Desktop e projeto.
-- [x] Confirmar Git 2.49.0.windows.1, Python e Node disponíveis.
-- [x] Criar pasta exclusiva `D:/COMMAND E CONQUER FALLING SKIES/FallingSkiesRTS`.
-- [x] Definir arquitetura e parâmetros iniciais em arquivos separados.
-- [ ] Obter autorização para baixar e extrair Godot e modelos de exportação.
-- [ ] Confirmar versão executável, importar projeto e testar renderização Compatibility.
+- [x] Documento original lido e preservado fora da pasta exclusiva do projeto.
+- [x] Hardware conferido: Core i3-7100, 16 GB de RAM, Intel HD Graphics 630.
+- [x] Projeto e Git local criados; design inicial registrado.
+- [x] Usuário autorizou seguir com todas as etapas e pediu maior realismo compatível com a máquina.
+- [x] Godot 4.7.2 Standard e templates Windows oficiais baixados e verificados por SHA512.
+- [x] Motor portátil em tools/, sem instalação de serviços ou mudanças de drivers/PATH.
 
-## Dependências propostas
+## Etapas 1 e 2 — Núcleo e Skirmish
 
-1. Godot 4.7.2 estável, edição Standard Windows x86_64, com GDScript. A página oficial de Windows consultada em 07/09/2026 oferece essa versão. Não usar edição .NET.
-2. Modelos de exportação da **mesma versão**, necessários para gerar um executável que funciona sem o editor.
+- [x] Arena, câmera, seleção por clique/caixa, grupos e navegação AStar.
+- [x] Comando implantável, construção, energia, filas e reembolso.
+- [x] Coletores transportam suprimentos até a refinaria; depósitos finitos e regeneração opcional.
+- [x] Combate, cobertura, ocupação, minimapa, visão por comandante e alertas.
+- [x] Menu, configuração, opções persistentes, dicas, pausa, reinício, vitória/derrota e placar.
+- [x] IA com economia real, reconhecimento, produção, expansão, ataques e recuo.
+- [x] Executável Windows aberto e renderizado sem o editor.
 
-Fonte: https://godotengine.org/download/windows/
-Exportação: https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_windows.html
+## Etapa 3 — Conteúdo
 
-Proposta de operação: baixar os arquivos oficiais, conferir os checksums publicados quando disponíveis e extrair em `FallingSkiesRTS/tools/`. Usar modo autocontido para manter os dados do editor no projeto. Não instalar serviços, alterar PATH, registro, drivers ou políticas do Windows. Não exigir privilégios administrativos. Nenhum download foi realizado nesta etapa.
+- [x] Três facções com atributos, nomes, edifícios, veículos e heróis próprios.
+- [x] Seis mapas determinísticos, cobrindo os quatro tamanhos.
+- [x] Um humano contra 1–8 IAs conforme limite do mapa; facções, cores, FFA e coalizão.
+- [x] Casual e Difícil parametrizados; recursos, velocidade, domínio, neutros e regeneração configuráveis.
+- [x] Pesquisa, habilidades, reparos, captura, conversão e cura.
+- [x] Três superarmas com requisitos, energia, recarga, aviso e efeitos persistentes.
+- [x] Quatro cheats independentes, remapeáveis, exclusivos do humano e reiniciados por partida.
 
-Reserva estimada: **3 GB** para downloads, extração, projeto, cache de importação e primeiros executáveis. É margem de planejamento, não uma medição dos pacotes. O pacote de modelos contém plataformas adicionais; conservar apenas o necessário à exportação Windows após validação. O jogo final deverá ocupar muito menos, com tamanho efetivo registrado na entrega.
+## Etapa 4 — Arte, desempenho e validação
 
-## Etapa 1 — Núcleo jogável
-
-- [ ] Criar projeto Godot 2D, Compatibility/OpenGL, janela redimensionável.
-- [ ] Arena, câmera, seleção por clique e caixa, ordens e navegação por grade.
-- [ ] Comando implantável, geração de energia, construção e filas com custos.
-- [ ] Coletor: depósito finito → carga → refinaria → crédito de suprimentos.
-- [ ] Combate, destruição, vitória e derrota.
-- [ ] Testar custos, dano, bloqueios e conclusão da partida no motor.
-
-## Etapa 2 — Partida completa 1 × 1
-
-- [ ] Ruínas de Boston; Resistência contra Espheni.
-- [ ] Menu inicial, configuração, opções salvas e dicas contextuais.
-- [ ] Névoa, minimapa, alertas, pontos de encontro e grupos de controle.
-- [ ] IA Casual com economia real e conhecimento limitado à visão.
-- [ ] Exportar Windows e executar sem editor.
-
-## Etapa 3 — Conteúdo e sistemas
-
-- [ ] Três facções assimétricas com estruturas, unidades e herói principal único.
-- [ ] Quatro mapas iniciais: Escola, Boston, Estrada e Torre; adicionar os outros dois após estabilidade.
-- [ ] Um jogador humano e 1–8 comandantes independentes; facções, cores, coalizão ou todos contra todos.
-- [ ] Dificuldades, recursos iniciais, velocidade, vitória territorial, ameaças neutras e regeneração configuráveis.
-- [ ] Tecnologias, patrulha, atacar-mover, parar, guardar, cobertura e ocupação de edifícios.
-- [ ] Três superarmas distintas, estrutura, energia, recarga, aviso e área persistente.
-- [ ] Cheats centralizados: recursos, invencibilidade, superarma instantânea e revelar mapa; remapeamento e reset por partida.
-- [ ] Pausa, reinício, abandono e placar completo.
-
-## Etapa 4 — Qualidade e desempenho
-
-- [ ] Substituir formas provisórias por arte original consistente e áudio original.
-- [ ] Volumes separados, escala de interface e controles em português.
-- [ ] Testar cada mapa: acessibilidade das bases, recursos, rotas e expansões.
-- [ ] Partidas automatizadas com sementes repetíveis nas duas dificuldades.
-- [ ] Medir FPS e tempo de quadro em execução gráfica no computador disponível.
-- [ ] Estresse gigante com oito IAs e população máxima; registrar p50/p95 dos quadros, duração e ambiente real.
-- [ ] Corrigir concentração de decisões da IA, navegação e efeitos antes de reduzir conteúdo.
+- [x] Formas provisórias substituídas por atlas originais de edifícios, tropas, veículos e cenário.
+- [x] Arte com aparência pré-renderizada, oito direções, texturas e áudio sintetizado original.
+- [x] MultiMesh para sprites, cache de terreno/minimapa, visão em rodízio, índice espacial e cache de construções.
+- [x] Teto de 270 unidades regulares e decisões de IA distribuídas.
+- [x] 124 verificações de regras, 13 avançadas e 25 de interface passaram.
+- [x] Partidas completas Casual e Difícil, sem cheats, terminaram nos testes automatizados.
+- [x] Cenário adicional confirmou que a IA derrota um humano passivo.
+- [x] Capturas revisadas; orientação vertical dos atlas corrigida e coletores diferenciados.
+- [x] Executável final medido graficamente em 1 × 1 e mapa gigante com oito IAs. Valores e limites em TESTES.md.
 
 ## Etapa 5 — Entrega
 
-- [ ] Jogo Windows offline exportado e testado fora do editor.
-- [ ] Partida Casual e Difícil completas, incluindo possibilidade real de derrota.
-- [ ] Cheats individualmente e combinados; validar invencibilidade contra superarmas e proteção contra conversão.
-- [ ] Validar que cheats não beneficiam inimigos e não persistem na partida seguinte.
-- [ ] Validar limites de mapas, população, facções, heróis e superarmas.
-- [ ] README de execução, controles, edição e exportação; licenças e limitações reais.
-- [ ] Histórico Git local e relatório final de testes.
+- [x] Executável offline e código-fonte organizados.
+- [x] README em português com controles, edição, exportação e limitações.
+- [x] Licenças do motor e terceiros, créditos e prompts de arte preservados.
+- [x] Atalho JOGAR.cmd, pacote portátil ZIP e histórico Git local.
+- [x] Relatórios e capturas incluídos em tests/.
 
-Não marcar uma etapa jogável nem prometer FPS com base apenas em inspeção de código ou simulação sem renderização. Após cada etapa registrar arquivos, teste executado, resultado e pendências neste documento.
+## Escopo efetivo
+
+A primeira versão é um RTS 2D/2.5D jogável. As unidades sugeridas no documento foram consolidadas em arquétipos comuns com variações por facção; não há modelo exclusivo para cada especialização de infantaria. Não se promete reprodução visual idêntica a Command & Conquer ou fotorrealismo 3D. Não há campanha, multiplayer ou salvamento de partida.
+
+As partidas de validação foram automatizadas no motor; não equivalem a sessões longas de teste humano. O teste gráfico mede janelas de 45 segundos e não garante FPS constante durante toda partida. Não há erro bloqueador conhecido após os testes registrados.

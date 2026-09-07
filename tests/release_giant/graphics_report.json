@@ -1,0 +1,21 @@
+{
+	"draw_calls": 99.0,
+	"draw_script_ms": 3.26311644908616,
+	"frames": 1915,
+	"p50_ms": 20.0974242424242,
+	"p95_ms": 33.3333333333333,
+	"renderer": "ANGLE (Intel, Intel(R) HD Graphics 630 (0x00005912) Direct3D11 vs_5_0 ps_5_0, D3D11-31.0.101.2140)",
+	"seconds": 45.0117611111116,
+	"sim_ms_per_frame": 5.10445744125326,
+	"sim_sections": {
+		"other_ms": 0.513,
+		"setup_ms": 3.062,
+		"units_ms": 1.865
+	},
+	"units": 209,
+	"view_sections": {
+		"fog_update_ms": 2.255,
+		"markers_ms": 0.534,
+		"minimap_ms": 0.101
+	}
+}

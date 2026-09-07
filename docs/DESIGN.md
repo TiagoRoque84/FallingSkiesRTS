@@ -1,5 +1,7 @@
 # Design e arquitetura inicial
 
+Documento de planejamento preservado. A implementação final e suas responsabilidades estão em [ARQUITETURA_FINAL.md](ARQUITETURA_FINAL.md); funcionalidades e limites entregues estão no [README](../README.md). As propostas abaixo registram a intenção inicial e não são uma lista de arquivos existentes.
+
 ## Experiência
 
 RTS 2D com aparência 2.5D, câmera superior inclinada e silhuetas claras. Uma partida local terá exatamente um jogador humano. Núcleo: implantar comando, explorar, coletar, construir, produzir, disputar território e destruir comandos inimigos. O modo territorial exigirá maioria dos pontos por um período configurável. Não haverá campanha nem rede.

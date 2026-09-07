@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "planned_not_playable",
+  "status": "playable_v1",
   "maps": [
     {"id": "escola", "name": "Escola da Resistência", "size": "pequeno", "max_enemies": 2, "initial_release": true, "theme": "suburbio_escola"},
     {"id": "boston", "name": "Ruínas de Boston", "size": "medio", "max_enemies": 4, "initial_release": true, "theme": "ruinas_urbanas"},

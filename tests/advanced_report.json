@@ -1,0 +1,15 @@
+{
+	"checks": 13,
+	"failures": [],
+	"matches": [
+		{
+			"collected": 11070.0,
+			"finished": true,
+			"produced": 33,
+			"scenario": "AI defeats passive human",
+			"seconds": 155.700000000001,
+			"wall_ms": 4417,
+			"winner": -1
+		}
+	]
+}

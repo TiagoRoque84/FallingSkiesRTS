@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "initial_untested_parameters",
+  "status": "validated_v1",
   "casual": {
     "decision_interval_seconds": 2.5,
     "first_attack_after_seconds": 180,

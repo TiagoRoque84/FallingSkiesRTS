@@ -1,0 +1,106 @@
+[
+	{
+		"difficulty": 0,
+		"finished": true,
+		"game_seconds": 496.800000000079,
+		"max_buildings": [
+			13,
+			13
+		],
+		"peak_entities": 91,
+		"teams": [
+			{
+				"alive": false,
+				"collected": 27840.0,
+				"color": 0,
+				"domination": 0,
+				"faction": 0,
+				"hero_ready": 0.0,
+				"kills": 51,
+				"lost": 95,
+				"money": 70.0,
+				"power": 155.0,
+				"produced": 94,
+				"research": 0.0,
+				"spent": 30770.0,
+				"super_charge": 0.0,
+				"super_warned": false,
+				"upgrade": false,
+				"use": 105.0
+			},
+			{
+				"alive": true,
+				"collected": 31140.0,
+				"color": 1,
+				"domination": 0,
+				"faction": 1,
+				"hero_ready": 0.0,
+				"kills": 95,
+				"lost": 51,
+				"money": 52.0,
+				"power": 220.0,
+				"produced": 80,
+				"research": 0.0,
+				"spent": 34088.0,
+				"super_charge": 0.0,
+				"super_warned": false,
+				"upgrade": false,
+				"use": 135.0
+			}
+		],
+		"wall_ms": 36209,
+		"winner": -1
+	},
+	{
+		"difficulty": 1,
+		"finished": true,
+		"game_seconds": 417.100000000061,
+		"max_buildings": [
+			13,
+			12
+		],
+		"peak_entities": 78,
+		"teams": [
+			{
+				"alive": true,
+				"collected": 25830.0,
+				"color": 0,
+				"domination": 0,
+				"faction": 0,
+				"hero_ready": 0.0,
+				"kills": 73,
+				"lost": 43,
+				"money": 760.0,
+				"power": 220.0,
+				"produced": 77,
+				"research": 0.0,
+				"spent": 28070.0,
+				"super_charge": 0.0,
+				"super_warned": false,
+				"upgrade": false,
+				"use": 150.0
+			},
+			{
+				"alive": false,
+				"collected": 18600.0,
+				"color": 1,
+				"domination": 0,
+				"faction": 1,
+				"hero_ready": 0.0,
+				"kills": 43,
+				"lost": 73,
+				"money": 53.0,
+				"power": 90.0,
+				"produced": 63,
+				"research": 0.0,
+				"spent": 21547.0,
+				"super_charge": 0.0,
+				"super_warned": false,
+				"upgrade": false,
+				"use": 15.0
+			}
+		],
+		"wall_ms": 29895,
+		"winner": 0
+	}
+]

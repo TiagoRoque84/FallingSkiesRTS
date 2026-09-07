@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "initial_untested_parameters",
+  "casual": {
+    "decision_interval_seconds": 2.5,
+    "first_attack_after_seconds": 180,
+    "attack_interval_seconds": 90,
+    "minimum_attack_group": 6,
+    "scout_interval_seconds": 45,
+    "retreat_health_fraction": 0.2,
+    "economic_multiplier": 1.0
+  },
+  "hard": {
+    "decision_interval_seconds": 1.0,
+    "first_attack_after_seconds": 120,
+    "attack_interval_seconds": 55,
+    "minimum_attack_group": 9,
+    "scout_interval_seconds": 22,
+    "retreat_health_fraction": 0.35,
+    "economic_multiplier": 1.0
+  }
+}

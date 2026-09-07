@@ -1,0 +1,6 @@
+.godot/
+tools/
+builds/
+*.tmp
+*.log
+.DS_Store

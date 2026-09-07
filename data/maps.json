@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "status": "planned_not_playable",
+  "maps": [
+    {"id": "escola", "name": "Escola da Resistência", "size": "pequeno", "max_enemies": 2, "initial_release": true, "theme": "suburbio_escola"},
+    {"id": "boston", "name": "Ruínas de Boston", "size": "medio", "max_enemies": 4, "initial_release": true, "theme": "ruinas_urbanas"},
+    {"id": "estrada", "name": "Estrada para Charleston", "size": "grande", "max_enemies": 6, "initial_release": true, "theme": "rodovia_mata"},
+    {"id": "torre", "name": "Zona da Torre Espheni", "size": "gigante", "max_enemies": 8, "initial_release": true, "theme": "ocupacao_alienigena"},
+    {"id": "subterranea", "name": "Charleston Subterrânea", "size": "medio", "max_enemies": 4, "initial_release": false, "theme": "setores_industriais"},
+    {"id": "fazenda", "name": "Fazenda e floresta ocupadas", "size": "grande", "max_enemies": 6, "initial_release": false, "theme": "fazenda_floresta"}
+  ]
+}

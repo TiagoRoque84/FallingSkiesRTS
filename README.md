@@ -2,6 +2,12 @@
 
 RTS de fã para Windows, em português, single-player e totalmente offline. Versão 1.0.
 
+**[Baixar o jogo para Windows](https://github.com/TiagoRoque84/FallingSkiesRTS/releases/download/v1.0.0/FallingSkies-Windows.zip)** · [Versões publicadas](https://github.com/TiagoRoque84/FallingSkiesRTS/releases)
+
+Extraia o ZIP e abra **FallingSkies.exe**. O botão **Code → Download ZIP** do GitHub baixa o código-fonte; o jogo pronto está em **Releases**.
+
+![Partida no executável Windows](tests/release_normal/gameplay_capture.png)
+
 ## Abrir e jogar
 
 Abra **JOGAR.cmd** ou **builds/FallingSkies.exe** com dois cliques. O executável contém o jogo, imagens e áudio; não precisa de editor, Python, instalação ou internet. Para copiar para outro lugar, extraia **builds/FallingSkies-Windows.zip** e abra o executável que está dentro.
@@ -102,7 +108,9 @@ O visual usa sprites detalhados com volume pré-renderizado. Não é reproduçã
 3. Simulação: **src/battle.gd**. Mapas: **src/battle_map.gd**. IA: **src/commander_ai.gd**. Menus: **src/main.gd**. Renderização: **src/battle_view.gd**, **sprite_bank.gd** e **sprite_batch.gd**.
 4. No PowerShell dentro desta pasta, execute **./scripts/build.ps1**. Ele importa recursos, roda testes de regras e gera o executável com pacote embutido.
 
-Motor e modelos já estão em **tools/**. **scripts/generate_content.py** recria dados-base e áudio, sobrescrevendo content.json; preserve seus ajustes antes de executá-lo. Artes e prompts estão em **assets/sprites/** e **docs/**.
+Na cópia original deste projeto, motor e modelos já estão em **tools/**. Essas dependências, os executáveis de **builds/** e o cache **.godot/** ficam fora do Git. Ao clonar do GitHub, obtenha o **Godot 4.7.2 Standard para Windows** e os **templates de exportação 4.7.2** no [site oficial do Godot](https://godotengine.org/download/windows/). Extraia o editor em **tools/godot/** e os templates **windows_release_x86_64.exe** e **windows_debug_x86_64.exe** em **tools/templates/** para usar o script de build. Para apenas jogar, use o pacote em Releases.
+
+**scripts/generate_content.py** recria dados-base e áudio, sobrescrevendo content.json; preserve seus ajustes antes de executá-lo. Artes e prompts estão em **assets/sprites/** e **docs/**.
 
 Testes, a partir da pasta do projeto:
 
@@ -111,7 +119,7 @@ Testes, a partir da pasta do projeto:
     & './tools/godot/Godot_v4.7.2-stable_win64_console.exe' --headless --path . --script tests/matches.gd
     & './tools/godot/Godot_v4.7.2-stable_win64_console.exe' --path . --script tests/ui_flow.gd
 
-As preferências ficam em **settings.cfg**, no diretório de dados do jogo em **%APPDATA%/Godot/app_userdata/**. O subdiretório logs contém o log. Somente opções são salvas. Git é exclusivamente local; tools, builds e .godot não entram nos commits.
+As preferências ficam em **settings.cfg**, no diretório de dados do jogo em **%APPDATA%/Godot/app_userdata/**. O subdiretório logs contém o log. Somente opções são salvas. Código, arte, documentação e testes estão publicados neste repositório; o pacote portátil é distribuído em Releases.
 
 ## Créditos
 

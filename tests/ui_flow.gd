@@ -11,7 +11,7 @@ func expect(value: bool,name: String):
 	if not value: failures.append(name); push_error("UI FAIL: "+name)
 
 func find_button(node: Node,prefix: String):
-	if node is Button and node.text.begins_with(prefix) and not node.is_queued_for_deletion(): return node
+	if node is Button and str(node.get_meta("caption",node.text)).begins_with(prefix) and not node.is_queued_for_deletion(): return node
 	for child in node.get_children():
 		var result=find_button(child,prefix)
 		if result!=null: return result
@@ -47,6 +47,10 @@ func run_flow():
 	expect(app.selected.size()==1 and app.sim.get_entity(app.selected[0]).kind=="mcv","comando móvel começa selecionado")
 	key(KEY_D)
 	expect(app.sim.has_building(0,"hq"),"tecla D implanta base")
+	app.update_hud()
+	expect(not app.deploy_button.visible,"implantação desaparece após criar a base")
+	expect(app.production_cards.power.picture.texture!=null,"construções têm figura")
+	expect(app.production_cards.refinery.button.disabled,"depósito bloqueado até gerador ficar pronto")
 	app.sim.update_vision()
 	find_button(app.ui,"Gerador").pressed.emit()
 	expect(app.view.placing=="power","botão de construção arma posicionamento")
@@ -54,6 +58,8 @@ func run_flow():
 	expect(app.sim.own(0,"power").size()==1,"clique no terreno inicia construção")
 	for n in 260: app.sim.tick(.05)
 	expect(app.sim.has_building(0,"power"),"construção pela UI termina")
+	app.update_hud()
+	expect(not app.production_cards.refinery.button.disabled,"depósito libera após energia pronta")
 	var soldier=app.sim.own(0,"rifle")[0]
 	click(app.view.world_to_screen(soldier.p))
 	expect(app.selected.has(soldier.id),"clique seleciona unidade")
@@ -87,7 +93,22 @@ func run_flow():
 	expect(not app.sim.cheats.used and not app.sim.cheats.active("invincible"),"reiniciar limpa cheats")
 	app.setup_demo(false); app.view.zoom=1.1
 	await capture("final_gameplay")
+	app.hud_tab=1; app.create_hud()
+	await capture("troops_gameplay")
+	expect(app.production_cards.rifle.picture.texture!=null,"tropas têm figura")
+	app.production_cards.rifle.button.pressed.emit()
+	expect(app.production_cards.rifle.status.text.contains("na fila"),"recrutar atualiza fila diretamente na figura")
+	app.sim.teams[0].money=0; app.update_hud()
+	expect(app.production_cards.tank.button.disabled,"custo indisponível bloqueia recrutamento")
+	root.size=Vector2i(1100,700)
+	await capture("compact_gameplay")
+	expect(app.weapon_button.get_global_rect().end.y<=app.get_viewport_rect().size.y+1,"painel cabe na altura mínima")
 	app.sim.damage(app.sim.own(0,"hq")[0],99999,1,true); app.sim.tick(.05)
+	expect(not app.sim.finished,"interface continua jogável após perder o comando")
+	app.sim.teams[0].money=6000; app.hud_tab=1; app.create_hud()
+	expect(not app.production_cards.rifle.button.disabled,"quartel ainda recruta sem comando central")
+	for e in app.sim.own(0): app.sim.damage(e,99999,1,true)
+	app.sim.tick(.05)
 	await capture("result_capture")
 	expect(app.sim.finished and find_button(app.ui,"JOGAR NOVAMENTE")!=null,"derrota abre placar final")
 	find_button(app.ui,"MENU PRINCIPAL").pressed.emit()

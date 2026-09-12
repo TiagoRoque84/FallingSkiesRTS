@@ -14,6 +14,8 @@ var hud: Control
 var config={"map":1,"faction":0,"enemies":1,"difficulty":0,"color":0,"resources":3000,"speed":1.0,"victory":0,"domination_time":180,"coalition":false,"neutrals":false,"superweapons":true,"cheats":false,"regenerate":false,"seed":83421,"enemy_factions":[1,-1,-1,-1,-1,-1,-1,-1],"enemy_colors":[1,2,3,4,5,6,7,8]}
 var paused=false
 var hud_tab=0
+var production_cards: Dictionary={}
+var deploy_button: Button
 var top_label: Label
 var info_label: Label
 var message_label: Label
@@ -173,6 +175,8 @@ func show_setup():
 	for i in int(catalog.maps[config.map].max_enemies): sizes.append(str(i+1)+" IA"+("s" if i>0 else ""))
 	option(row,"Adversários",sizes,config.enemies-1,func(i):config.enemies=i+1; show_setup())
 	option(row,"Dificuldade",["Casual","Difícil"],config.difficulty,func(i):config.difficulty=i)
+	var casual_hint=label(box,"Casual: cerca de 6 minutos para preparar a base, ondas pequenas e tecnologia inimiga mais lenta. Para aprender, use 1 IA.",12,MINT)
+	casual_hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	option(box,"Relação dos adversários",["Todos contra todos","Coalizão contra você · desafio extremo"],1 if config.coalition else 0,func(i):config.coalition=i==1)
 	var colors=["Jade","Coral","Violeta","Ouro","Azul","Rosa","Cobre","Oliva","Prata"]
 	option(box,"Sua cor",colors,config.color,func(i):config.color=i)
@@ -184,8 +188,8 @@ func show_setup():
 		option(r,"Cor",colors,config.enemy_colors[n],func(i):config.enemy_colors[number]=i)
 	option(box,"Suprimentos iniciais",["1.500 · Escassos","3.000 · Padrão","6.000 · Abundantes"],[1500,3000,6000].find(config.resources),func(i):config.resources=[1500,3000,6000][i])
 	option(box,"Velocidade",["0,75×","1×","1,5×","2×"],[.75,1.0,1.5,2.0].find(config.speed),func(i):config.speed=[.75,1.0,1.5,2.0][i])
-	option(box,"Vitória",["Destruir todos os comandos inimigos","Dominar a maioria dos pontos"],config.victory,func(i):config.victory=i)
-	option(box,"Tempo de domínio contínuo",["2 minutos","3 minutos","5 minutos"],[120,180,300].find(config.domination_time),func(i):config.domination_time=[120,180,300][i])
+	var win_hint=label(box,"VITÓRIA: destrua todas as unidades e estruturas inimigas. Perder o comando não elimina um exército.",12,GOLD)
+	win_hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	toggle(box,"Patrulhas neutras",config.neutrals,func(v):config.neutrals=v)
 	toggle(box,"Superarmas",config.superweapons,func(v):config.superweapons=v)
 	toggle(box,"Regenerar depósitos lentamente (+2/s)",config.regenerate,func(v):config.regenerate=v)
@@ -235,18 +239,21 @@ func close_overlay():
 	overlay=null
 
 func start_game():
+	config.victory=0
 	clear_ui(); paused=false; selected.clear(); groups.clear(); accumulator=0; tutorial_step=0
 	if sim!=null: sim.ai_agents.clear()
 	config.seed=83421+config.map*131
 	last_config=config.duplicate(true)
 	sim=Battle.new(); sim.notice.connect(message); sim.ended.connect(on_ended); sim.start(config)
-	view.sim=sim; view.camera=sim.map.starts[0]; view.zoom=.85; view.placing=""; view.aim_mode=""
+	view.sim=sim; view.camera=sim.map.starts[0]; view.zoom=1.05; view.placing=""; view.aim_mode=""
 	selected=[sim.own(0,"mcv")[0].id]; view.selected=selected
 	create_hud()
 	message("Selecione o comando móvel e pressione D. Depois: gerador → depósito → quartel.","ready")
 
 func create_hud():
 	if is_instance_valid(hud): hud.queue_free()
+	production_cards.clear()
+	deploy_button=null
 	hud=Control.new(); hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); hud.mouse_filter=Control.MOUSE_FILTER_IGNORE; ui.add_child(hud)
 	var top=panel(hud); top.position=Vector2.ZERO; top.size=Vector2(get_viewport_rect().size.x,66)
 	var row=HBoxContainer.new(); row.add_theme_constant_override("separation",25); top.add_child(row)
@@ -255,9 +262,9 @@ func create_hud():
 	var speed=OptionButton.new(); for item in ["0,75×","1×","1,5×","2×"]: speed.add_item(item)
 	speed.selected=[.75,1.0,1.5,2.0].find(config.speed); speed.item_selected.connect(func(i):config.speed=[.75,1.0,1.5,2.0][i]); row.add_child(speed)
 	var pause_button=button(row,"Ⅱ  PAUSA",func():show_pause(),32); pause_button.size_flags_horizontal=Control.SIZE_SHRINK_END
-	var right=panel(hud); right.position=Vector2(get_viewport_rect().size.x-336,319); right.size=Vector2(336,get_viewport_rect().size.y-319)
+	var right=panel(hud); right.position=Vector2(get_viewport_rect().size.x-336,259); right.size=Vector2(336,get_viewport_rect().size.y-259)
 	var box=vbox(right,9)
-	info_label=label(box,"",15,TEXT); info_label.custom_minimum_size.y=64; info_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	info_label=label(box,"",13,TEXT); info_label.custom_minimum_size.y=42; info_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var tabs=HBoxContainer.new(); tabs.add_theme_constant_override("separation",5); box.add_child(tabs)
 	for i in 3:
 		var index=i
@@ -266,18 +273,15 @@ func create_hud():
 	var scroll=ScrollContainer.new(); scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED; box.add_child(scroll)
 	var contents=vbox(scroll,7); contents.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 	if hud_tab in [0,1]:
-		var grid=GridContainer.new(); grid.columns=2; grid.add_theme_constant_override("h_separation",7); grid.add_theme_constant_override("v_separation",7); contents.add_child(grid)
-		var kinds=catalog.buildings.keys() if hud_tab==0 else catalog.units.keys()
-		for key in kinds:
-			if key in ["hq","mcv"]: continue
-			var kind=key; var d=catalog.definition(kind,sim.teams[0].faction)
-			var caption=d.name
-			if caption.length()>19: caption=caption.substr(0,17)+"…"
-			var b=button(grid,caption+"\n%d SUP · %d s" % [d.cost,d.time],func():
-				if catalog.buildings.has(kind): view.placing=kind; view.aim_mode=""; message("Posicione "+d.name+" no terreno. Direito/Esc cancela.")
-				else: sim.train(0,kind,selected[0] if selected.size()==1 else 0),58)
-			b.custom_minimum_size.x=131; b.add_theme_font_size_override("font_size",int(12*settings.values.ui_scale))
-			b.tooltip_text="%s\nVida: %d · Alcance: %d\nCusto: %d SUP · Tempo: %d s\n%s" % [d.name,d.hp,d.range,d.cost,d.time,d.description]
+		deploy_button=button(contents,"D · IMPLANTAR BASE",func():
+			for e in sim.own(0,"mcv"): sim.deploy(e.id)
+			update_hud(),36)
+		label(contents,"Escolha uma figura · role para ver mais",11,MUTED)
+		var categories={"ESTRUTURAS": ["power","refinery","barracks","factory","lab","hospital"],"DEFESAS": ["turret","wall","super"]} if hud_tab==0 else {"INFANTARIA": ["rifle","scout","heavy","sniper","medic","engineer"],"VEÍCULOS E COLETA": ["worker","buggy","tank","siege"],"ELITES E HERÓIS": ["elite","hero","special"]}
+		for category in categories:
+			label(contents,category,11,MINT)
+			var grid=GridContainer.new(); grid.columns=2; grid.add_theme_constant_override("h_separation",7); grid.add_theme_constant_override("v_separation",7); contents.add_child(grid)
+			for kind in categories[category]: create_production_card(grid,kind)
 	else:
 		button(contents,"D · Implantar comando",func():deploy_selected())
 		button(contents,"F · Habilidade do herói/especial",func():arm_mode("ability"))
@@ -294,8 +298,63 @@ func create_hud():
 	message_label=label(hud,"",16,GOLD); message_label.position=Vector2(24,get_viewport_rect().size.y-112); message_label.size=Vector2(get_viewport_rect().size.x-386,48); message_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	update_hud()
 
+func create_production_card(parent: Node,kind: String):
+	var d=catalog.definition(kind,sim.teams[0].faction)
+	var b=button(parent,"",func():
+		if catalog.buildings.has(kind):
+			view.placing=kind; view.aim_mode=""; message("Posicione "+d.name+" no terreno. Direito/Esc cancela.")
+		else: sim.train(0,kind,selected[0] if selected.size()==1 else 0)
+		update_hud(),158)
+	b.custom_minimum_size.x=130; b.set_meta("caption",d.name)
+	var stack=VBoxContainer.new(); b.add_child(stack); stack.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stack.offset_left=7; stack.offset_right=-7; stack.offset_top=5; stack.offset_bottom=-5
+	stack.add_theme_constant_override("separation",2); stack.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	var picture=TextureRect.new(); picture.texture=view.art.icon(sim.teams[0].faction,kind)
+	picture.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; picture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	picture.custom_minimum_size.y=70; picture.mouse_filter=Control.MOUSE_FILTER_IGNORE; stack.add_child(picture)
+	var role={"rifle":"RFL","scout":"»","heavy":"AT","sniper":"ALVO","medic":"+","engineer":"ENG","elite":"★","hero":"★","special":"◆","worker":"SUP","buggy":"»","tank":"AT","siege":"ART"}.get(kind,"")
+	if role!="":
+		var badge=label(picture,role,14,GOLD); badge.position=Vector2(2,2)
+	var title=label(stack,d.name,12,TEXT); title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; title.custom_minimum_size.y=32
+	var price=label(stack,"%d SUP · %d s" % [d.cost,d.time],11,GOLD); price.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	var status=label(stack,"",10,MINT); status.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; status.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	var progress=ProgressBar.new(); progress.custom_minimum_size.y=4; progress.show_percentage=false; progress.mouse_filter=Control.MOUSE_FILTER_IGNORE; stack.add_child(progress)
+	production_cards[kind]={"button":b,"status":status,"progress":progress,"picture":picture}
+	b.tooltip_text="%s\nVida: %d · Alcance: %d\n%s" % [d.name,d.hp,d.range,d.description]
+
+func update_production_cards():
+	for kind in production_cards:
+		var card=production_cards[kind]; var d=catalog.definition(kind,sim.teams[0].faction)
+		var reason=""; var count=0; var progress=0.0
+		var structure=catalog.buildings.has(kind)
+		var required=d.get("requires","")
+		if structure and not sim.has_building(0,"hq"): reason="Implante a base (D)"
+		elif required!="" and not sim.has_building(0,required): reason="Requer "+catalog.definition(required,sim.teams[0].faction).name
+		elif not structure and not sim.has_building(0,d.producer): reason="Requer "+catalog.definition(d.producer,sim.teams[0].faction).name
+		elif not structure and sim.population(0)>=sim.pop_limit: reason="População cheia"
+		elif not sim.cheats.active("resources") and sim.teams[0].money<d.cost: reason="Faltam suprimentos"
+		if kind=="super":
+			if not sim.config.superweapons: reason="Desativada na partida"
+			elif not sim.own(0,"super").is_empty(): reason="Já construída"
+		if kind=="hero" and (not sim.own(0,"hero").is_empty() or sim.teams[0].hero_ready>0): reason="Herói indisponível"
+		for e in sim.own(0):
+			if structure and e.kind==kind and e.build>0:
+				count+=1; progress=maxf(progress,100*(1-e.build/e.d.time))
+			for q in e.queue:
+				if q.kind==kind:
+					count+=1; progress=maxf(progress,100*(1-q.left/q.total))
+		if kind=="hero" and count>0: reason="Herói na fila"
+		if not structure and reason=="" and not sim.own(0,d.producer).any(func(e):return e.build<=0 and e.queue.size()<8): reason="Fila cheia"
+		card.button.disabled=reason!=""
+		card.picture.modulate=Color(.55,.6,.65) if reason!="" else Color.WHITE
+		card.status.text=("%d na fila · %d%%" % [count,progress]) if count>0 else (reason if reason!="" else ("Clique no terreno" if view.placing==kind else "Disponível"))
+		card.progress.value=progress
+		card.button.tooltip_text="%s\n%d SUP · %d s\n%s\n%s" % [d.name,d.cost,d.time,d.description,reason if reason!="" else "Clique para construir" if structure else "Clique para recrutar"]
+
 func update_hud():
 	if sim==null or not is_instance_valid(top_label): return
+	if is_instance_valid(deploy_button): deploy_button.visible=not sim.own(0,"mcv").is_empty()
+	update_production_cards()
 	var team=sim.teams[0]
 	var flags=[]
 	for key in sim.cheats.flags:
@@ -499,7 +558,13 @@ func pick(p: Vector2,friendly_only: bool) -> int:
 	for e in sim.entities:
 		if (friendly_only and e.owner!=0) or not sim.visible(0,e.p): continue
 		var gap=e.p.distance_to(p)
-		if gap<e.d.radius+16 and gap<distance: result=e.id; distance=gap
+		var hit=e.d.radius+16
+		if not e.building:
+			var faction=sim.teams[e.owner].faction if e.owner>=0 else 1
+			var width=view.unit_width(e,faction)
+			gap=(e.p+Vector2(0,-width*.26)).distance_to(p)
+			hit=maxf(hit,width*.42)
+		if gap<hit and gap<distance: result=e.id; distance=gap
 	return result
 
 func on_resize():

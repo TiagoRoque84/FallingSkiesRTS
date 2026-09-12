@@ -120,11 +120,24 @@ func run_tests():
 	expect(point.owner==0,"ponto é capturado após presença contínua")
 	capture.config.victory=1; capture.config.domination_time=2
 	for p in capture.map.points: p.owner=0
-	run_seconds(capture,3); expect(capture.finished and capture.winner==0,"vitória territorial conclui partida")
+	run_seconds(capture,3); expect(not capture.finished,"domínio territorial não encerra a partida")
 	var victory=fresh(); victory.damage(victory.own(1,"hq")[0],99999,0,true); run_seconds(victory,.1)
-	expect(victory.finished and victory.winner==0,"destruir último comando dá vitória")
+	expect(not victory.finished and victory.teams[1].alive,"destruir comando preserva tropas inimigas e não dá vitória")
+	var survivor= victory.own(1)[0]
+	for e in victory.own(1):
+		if e.id!=survivor.id: victory.damage(e,99999,0,true)
+	run_seconds(victory,.1)
+	expect(not victory.finished,"uma única unidade impede vitória")
+	var last_structure=victory.spawn("wall",1,survivor.p+Vector2(120,0))
+	victory.damage(survivor,99999,0,true); run_seconds(victory,.1)
+	expect(not victory.finished,"uma única estrutura impede vitória")
+	victory.damage(last_structure,99999,0,true); run_seconds(victory,.1)
+	expect(victory.finished and victory.winner==0,"última estrutura destruída conclui vitória")
 	var defeat=fresh(); defeat.damage(defeat.own(0,"hq")[0],99999,1,true); run_seconds(defeat,.1)
-	expect(defeat.finished and defeat.winner==-1,"perder comando dá derrota")
+	expect(not defeat.finished,"perder comando não dá derrota enquanto há sobreviventes")
+	for e in defeat.own(0): defeat.damage(e,99999,1,true)
+	run_seconds(defeat,.1)
+	expect(defeat.finished and defeat.winner==-1,"perder todas as unidades e estruturas dá derrota")
 	var reset=fresh(); expect(not reset.cheats.used and not reset.cheats.active("invincible"),"nova partida limpa cheats e histórico")
 	reset.cheats.reset(false); expect(not reset.cheats.toggle("resources"),"cheats bloqueados quando configuração não permite")
 	for map_index in 6:

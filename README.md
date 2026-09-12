@@ -1,12 +1,14 @@
 # Falling Skies: Guerra pela Terra
 
-RTS de fã para Windows, em português, single-player e totalmente offline. Versão 1.0.
+RTS de fã para Windows, em português, single-player e totalmente offline. Versão 1.1.
 
-**[Baixar o jogo para Windows](https://github.com/TiagoRoque84/FallingSkiesRTS/releases/download/v1.0.0/FallingSkies-Windows.zip)** · [Versões publicadas](https://github.com/TiagoRoque84/FallingSkiesRTS/releases)
+**Atualização 1.1 de 12/09/2026:** painel de produção com figuras, categorias, requisitos e progresso; unidades maiores com contorno e identificação de equipe; modo casual com preparação de cerca de seis minutos, ondas de até seis tropas a cada 150 segundos e tecnologia mais lenta. A vitória e a derrota exigem destruir todas as unidades e estruturas do lado adversário. Perder o comando ou dominar bandeiras não encerra a partida.
+
+**[Baixar o jogo para Windows](https://github.com/TiagoRoque84/FallingSkiesRTS/releases/download/v1.1.0/FallingSkies-Windows.zip)** · [Versões publicadas](https://github.com/TiagoRoque84/FallingSkiesRTS/releases)
 
 Extraia o ZIP e abra **FallingSkies.exe**. O botão **Code → Download ZIP** do GitHub baixa o código-fonte; o jogo pronto está em **Releases**.
 
-![Partida no executável Windows](tests/release_normal/gameplay_capture.png)
+![Partida no executável Windows](tests/update_20260912/gameplay_capture.png)
 
 ## Abrir e jogar
 
@@ -19,13 +21,13 @@ No menu, escolha **Preparar operação**. Para aprender: **Escola da Resistênci
 3. Construa **Depósito de Suprimentos**. Coletores enchem a carga e retornam à refinaria para creditar os recursos. A refinaria entrega um coletor adicional se houver vaga.
 4. Construa **Quartel** e recrute na aba **TROPAS**. O custo é pago ao entrar na fila.
 5. Explore com o batedor. **A + clique** avança combatendo. Ruínas oferecem abrigo; a mata reduz dano recebido.
-6. Expanda na direção de novos depósitos, construa oficina e laboratório e destrua comandos inimigos ou cumpra o objetivo territorial.
+6. Expanda na direção de novos depósitos, construa oficina e laboratório e destrua todas as unidades e estruturas inimigas, incluindo coletores e muros.
 
 Selecione uma construção de produção e clique direito no terreno para definir ponto de encontro. Em **TÁTICA**, cancele o último item da fila com reembolso ou pesquise armas (+15% de dano, 500 suprimentos, 35 s).
 
 ## Conteúdo
 
-Três facções, seis mapas, um jogador humano contra até oito IAs, economia por coleta física, energia, construção, filas, expansão, tecnologias, cura, reparos, captura e conversão. Há seleção por caixa, grupos, patrulha, atacar-mover, guardar, minimapa, névoa por comandante, alertas, duas dificuldades, vitória por destruição ou domínio, pausa e placar. Arte original detalhada, tropas em oito direções, terreno texturizado e sombras incorporadas aos sprites.
+Três facções, seis mapas, um jogador humano contra até oito IAs, economia por coleta física, energia, construção, filas, expansão, tecnologias, cura, reparos, captura e conversão. Há seleção por caixa, grupos, patrulha, atacar-mover, guardar, minimapa, névoa por comandante, alertas, duas dificuldades, vitória por eliminação completa, pausa e placar. Arte original detalhada, tropas em oito direções, terreno texturizado e sombras incorporadas aos sprites.
 
 | Mapa | Tamanho | Máximo de IAs |
 | --- | --- | ---: |

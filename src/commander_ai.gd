@@ -19,6 +19,7 @@ func _init(battle,team: int):
 	params=sim.catalog.ai.hard if hard else sim.catalog.ai.casual
 	decision=owner*.23
 	next_attack=float(params.first_attack_after_seconds)+owner*7
+	if not hard: next_scout=next_attack
 
 func update(dt: float):
 	if not sim.teams[owner].alive: return
@@ -27,9 +28,13 @@ func update(dt: float):
 	decision=params.decision_interval_seconds
 	for vehicle in sim.own(owner,"mcv"): sim.deploy(vehicle.id)
 	var bases=sim.own(owner,"hq")
+	if bases.is_empty(): bases=sim.own(owner).filter(func(e):return e.building)
+	if bases.is_empty(): bases=sim.own(owner)
 	if bases.is_empty(): return
 	var base=bases[0]
 	var team=sim.teams[owner]
+	# Casual delays technology and sends small, spaced waves.
+	var tech_time=elapsed if hard else elapsed*.35
 	var structures=sim.own(owner).filter(func(e):return e.building)
 	var building_now=structures.any(func(e):return e.build>0)
 	if not building_now:
@@ -37,17 +42,18 @@ func update(dt: float):
 		if not sim.has_building(owner,"power") or team.power-team.use<25: desired="power"
 		elif not sim.has_building(owner,"refinery"): desired="refinery"
 		elif not sim.has_building(owner,"barracks"): desired="barracks"
-		elif not sim.has_building(owner,"factory") and elapsed>45: desired="factory"
+		elif not sim.has_building(owner,"factory") and tech_time>(45 if hard else 100): desired="factory"
 		elif sim.own(owner,"turret").size()<2 and elapsed>75: desired="turret"
-		elif not sim.has_building(owner,"lab") and elapsed>130: desired="lab"
+		elif not sim.has_building(owner,"lab") and tech_time>130: desired="lab"
 		elif not sim.has_building(owner,"hospital") and elapsed>170: desired="hospital"
-		elif sim.config.superweapons and not sim.has_building(owner,"super") and elapsed>220 and team.money>2100: desired="super"
-		elif sim.own(owner,"refinery").size()<3 and elapsed>140+expansion*80 and team.money>750: desired="refinery"
+		elif sim.config.superweapons and not sim.has_building(owner,"super") and tech_time>(220 if hard else 300) and team.money>2100: desired="super"
+		elif sim.own(owner,"refinery").size()<(3 if hard else 2) and tech_time>140+expansion*80 and team.money>750: desired="refinery"
 		if desired!="": place(desired,base,structures)
 	var workers=sim.own(owner,"worker")
-	if sim.has_building(owner,"refinery") and workers.size()< (5 if hard else 4): sim.train(owner,"worker")
-	if sim.has_building(owner,"barracks") and sim.population(owner)<sim.pop_limit:
-		var composition=["rifle","rifle","heavy","scout","medic","sniper"]
+	if sim.has_building(owner,"refinery") and workers.size()< (5 if hard else 2): sim.train(owner,"worker")
+	var army_cap=sim.pop_limit if hard else mini(sim.pop_limit,int(params.army_limit))
+	if sim.has_building(owner,"barracks") and sim.population(owner)<army_cap:
+		var composition=["rifle","rifle","heavy","scout","medic","sniper"] if hard else ["rifle","rifle","rifle","heavy","medic"]
 		if hard:
 			var enemy_armor=0
 			for enemy in sim.entities:
@@ -76,12 +82,13 @@ func update(dt: float):
 			for retry in 8:
 				if not sim.seen(owner,goal): break
 				goal=Vector2(sim.rng.randf_range(100,sim.map.size-100),sim.rng.randf_range(100,sim.map.size-100))
-			sim.move_order(scout,goal,"attack_move")
+			sim.move_order(scout,goal,"attack_move" if hard else "move")
 	if elapsed>next_attack and army.size()>=params.minimum_attack_group:
 		next_attack=elapsed+params.attack_interval_seconds
 		var target=choose_target(base.p)
-		for n in army.size():
-			var u=army[n]
+		var wave=army if hard else army.filter(func(u):return u.order!="attack_move" or (u.path.is_empty() and sim.get_entity(u.target).is_empty())).slice(0,int(params.maximum_attack_group))
+		for n in wave.size():
+			var u=wave[n]
 			if hard and n%3==0 and u.p.distance_to(target)>700:
 				sim.move_order(u,target+Vector2(150,-140),"attack_move")
 			else: sim.move_order(u,target+Vector2((n%5)*27,(n/5)*27),"attack_move")

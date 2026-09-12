@@ -2,59 +2,59 @@
 	{
 		"difficulty": 0,
 		"finished": true,
-		"game_seconds": 496.800000000079,
+		"game_seconds": 891.149999999737,
 		"max_buildings": [
-			13,
+			12,
 			13
 		],
-		"peak_entities": 91,
+		"peak_entities": 61,
 		"teams": [
 			{
 				"alive": false,
-				"collected": 27840.0,
+				"collected": 24300.0,
 				"color": 0,
 				"domination": 0,
 				"faction": 0,
-				"hero_ready": 0.0,
-				"kills": 51,
-				"lost": 95,
-				"money": 70.0,
-				"power": 155.0,
-				"produced": 94,
-				"research": 0.0,
-				"spent": 30770.0,
+				"hero_ready": 41.6500000000027,
+				"kills": 14,
+				"lost": 51,
+				"money": 12540.0,
+				"power": 65.0,
+				"produced": 38,
+				"research": -0.000000000000149755208234126,
+				"spent": 14760.0,
 				"super_charge": 0.0,
 				"super_warned": false,
-				"upgrade": false,
-				"use": 105.0
+				"upgrade": true,
+				"use": 0.0
 			},
 			{
 				"alive": true,
-				"collected": 31140.0,
+				"collected": 20130.0,
 				"color": 1,
 				"domination": 0,
 				"faction": 1,
 				"hero_ready": 0.0,
-				"kills": 95,
-				"lost": 51,
-				"money": 52.0,
+				"kills": 51,
+				"lost": 14,
+				"money": 7500.0,
 				"power": 220.0,
-				"produced": 80,
-				"research": 0.0,
-				"spent": 34088.0,
+				"produced": 28,
+				"research": -0.000000000000149755208234126,
+				"spent": 15630.0,
 				"super_charge": 0.0,
 				"super_warned": false,
-				"upgrade": false,
+				"upgrade": true,
 				"use": 135.0
 			}
 		],
-		"wall_ms": 36209,
+		"wall_ms": 55207,
 		"winner": -1
 	},
 	{
 		"difficulty": 1,
 		"finished": true,
-		"game_seconds": 417.100000000061,
+		"game_seconds": 421.250000000062,
 		"max_buildings": [
 			13,
 			12
@@ -63,18 +63,18 @@
 		"teams": [
 			{
 				"alive": true,
-				"collected": 25830.0,
+				"collected": 26340.0,
 				"color": 0,
 				"domination": 0,
 				"faction": 0,
 				"hero_ready": 0.0,
-				"kills": 73,
+				"kills": 75,
 				"lost": 43,
-				"money": 760.0,
+				"money": 340.0,
 				"power": 220.0,
-				"produced": 77,
+				"produced": 78,
 				"research": 0.0,
-				"spent": 28070.0,
+				"spent": 29000.0,
 				"super_charge": 0.0,
 				"super_warned": false,
 				"upgrade": false,
@@ -88,9 +88,9 @@
 				"faction": 1,
 				"hero_ready": 0.0,
 				"kills": 43,
-				"lost": 73,
+				"lost": 75,
 				"money": 53.0,
-				"power": 90.0,
+				"power": 0.0,
 				"produced": 63,
 				"research": 0.0,
 				"spent": 21547.0,
@@ -100,7 +100,7 @@
 				"use": 15.0
 			}
 		],
-		"wall_ms": 29895,
+		"wall_ms": 28507,
 		"winner": 0
 	}
 ]

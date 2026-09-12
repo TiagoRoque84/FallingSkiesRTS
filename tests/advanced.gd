@@ -56,7 +56,18 @@ func run_tests():
 	expect(point.owner>0,"aliados capturam juntos sem contestação entre si")
 	coal.map.points[0].owner=1; coal.map.points[1].owner=2
 	for n in 50: coal.tick(.05)
-	expect(coal.finished and coal.winner>0,"domínio combinado da coalizão causa derrota humana")
+	expect(not coal.finished,"domínio combinado da coalizão não causa derrota humana")
+	for e in coal.own(1): coal.damage(e,99999,0,true)
+	coal.tick(.05)
+	expect(not coal.finished and not coal.teams[1].alive,"eliminar um adversário não elimina o restante da coalizão")
+	for e in coal.own(2): coal.damage(e,99999,0,true)
+	coal.tick(.05)
+	expect(coal.finished and coal.winner==0,"vitória exige eliminar todos os adversários")
+	var remnant=fresh(); remnant.config.difficulty=0
+	remnant.damage(remnant.own(1,"hq")[0],99999,0,true); remnant.tick(.05)
+	var surviving_ai=AI.new(remnant,1); surviving_ai.elapsed=400; surviving_ai.next_attack=399
+	remnant.spawn("rifle",1,remnant.own(1,"rifle")[0].p+Vector2(30,0)); surviving_ai.update(10)
+	expect(remnant.own(1,"rifle").any(func(e):return e.order=="attack_move"),"IA continua comandando sobreviventes sem comando central")
 	var enemy_win=Battle.new(); enemy_win.start(options())
 	# Human driver deliberately issues no orders; the enemy must find and defeat it normally.
 	var start=Time.get_ticks_msec()

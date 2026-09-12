@@ -1,5 +1,11 @@
 # Testes da versão 1.0
 
+## Atualização 1.1.0 — 12/09/2026
+
+Regras: 128 verificações; avançados: 16; interface: 35; casual: 6. Todas passaram. A interface verifica figuras, bloqueios, fila, implantação, recrutamento sem comando central e altura mínima de 1100 × 700. Capturas do painel de base e tropas foram inspecionadas. O teste casual simula cinco minutos de preparação e mede a primeira onda de seis tropas e a retomada de ordens. Testes de eliminação cobrem sobrevivência sem comando, última unidade, último muro, múltiplos inimigos, derrota completa e ausência de vitória territorial. A IA continua comandando sobreviventes após perder o comando. Duas partidas automatizadas completas terminaram por eliminação total: casual em 891,15 segundos simulados e difícil em 421,25 segundos.
+
+Os números de desempenho e partidas de 07/09 abaixo são históricos e não medem o novo equilíbrio nem o contorno das unidades.
+
 Validação em 7 de setembro de 2026, no computador do usuário. Executável final: **122.735.552 bytes** (117,05 MiB). SHA256:
 
     13716D18128517B631B611E51BF8592646C54BE3B8D4AB7F4E5E00F503CFA52D
@@ -65,3 +71,5 @@ Troque --benchmark por --qa para o cenário 1 × 1. Ambos encerram automaticamen
 ## Limites conhecidos
 
 Não há bloqueador conhecido nos cenários testados. O balanceamento foi validado por partidas determinísticas e precisa de mais experiência humana para ajuste fino. Infantarias especializadas compartilham modelos-base; movimento usa oito orientações e oscilação leve. Os mapas são layouts por regras, com visual 2D/2.5D. Não há campanha, multiplayer ou salvamento de partidas. O objetivo gráfico entregue é uma estética detalhada de RTS clássico, sem promessa de identidade visual exata com Command & Conquer ou fotorrealismo.
+
+Executável 1.1.0: teste gráfico de 15 segundos, 458 quadros, p50 31.48 ms e p95 46.23 ms. Evidência: tests/update_20260912/. Pacote ZIP conferido por CRC e SHA256 do executável interno.

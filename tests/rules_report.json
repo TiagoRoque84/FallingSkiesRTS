@@ -1,6 +1,6 @@
 {
-	"checks": 124,
-	"elapsed_ms": 2246,
+	"checks": 128,
+	"elapsed_ms": 3222,
 	"engine": "4.7.2-stable (official)",
 	"failures": []
 }

@@ -2,11 +2,13 @@
   "schema_version": 1,
   "status": "validated_v1",
   "casual": {
-    "decision_interval_seconds": 2.5,
-    "first_attack_after_seconds": 180,
-    "attack_interval_seconds": 90,
-    "minimum_attack_group": 6,
-    "scout_interval_seconds": 45,
+    "decision_interval_seconds": 7.0,
+    "first_attack_after_seconds": 360,
+    "attack_interval_seconds": 150,
+    "minimum_attack_group": 4,
+    "maximum_attack_group": 6,
+    "army_limit": 16,
+    "scout_interval_seconds": 100,
     "retreat_health_fraction": 0.2,
     "economic_multiplier": 1.0
   },

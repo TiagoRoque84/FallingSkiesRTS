@@ -36,4 +36,13 @@ func unit_region(faction: int,e: Dictionary) -> Rect2:
 
 func icon(faction: int,kind: String) -> Texture2D:
 	if BUILDING_ORDER.has(kind): return building_icons[faction][kind]
-	return null
+	var atlas=AtlasTexture.new()
+	if kind=="wall":
+		atlas.atlas=environment; atlas.region=region(environment,8,3,3)
+	else:
+		var vehicle=kind in ["tank","siege","mcv","worker","buggy"]
+		atlas.atlas=utility if kind in ["mcv","worker","buggy"] else units
+		var row=faction+(3 if vehicle else 0)
+		if kind in ["mcv","worker"]: row=faction
+		atlas.region=region(atlas.atlas,row*8+1,8,6)
+	return atlas

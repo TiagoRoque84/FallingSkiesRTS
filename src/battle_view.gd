@@ -42,7 +42,7 @@ func area() -> Rect2:
 	return Rect2(0,66,viewport_size().x-336,viewport_size().y-66)
 
 func minimap_rect() -> Rect2:
-	return Rect2(viewport_size().x-314,108,292,196)
+	return Rect2(viewport_size().x-314,100,292,144)
 
 func world_to_screen(p: Vector2) -> Vector2:
 	return (p-camera)*zoom+area().get_center()
@@ -67,7 +67,7 @@ func setup_batches():
 	world_root=Node2D.new(); add_child(world_root)
 	ground_sprite=Sprite2D.new(); ground_sprite.texture=terrain_texture; ground_sprite.centered=false
 	ground_sprite.scale=Vector2.ONE*sim.map.size/terrain_texture.get_width(); ground_sprite.z_index=-9; world_root.add_child(ground_sprite)
-	ground_sprite.modulate=Color(.8,.84,.76) if sim.map.map_id!="torre" else Color(.85,.83,.88)
+	ground_sprite.modulate=Color(.64,.68,.62) if sim.map.map_id!="torre" else Color(.68,.66,.71)
 	scenery_batch=Batch.new(); scenery_batch.configure(art.environment,2500); scenery_batch.z_index=-6; world_root.add_child(scenery_batch)
 	scenery_batch.begin()
 	for d in sim.map.decorations:
@@ -82,8 +82,8 @@ func setup_batches():
 	building_batches.clear()
 	for f in 3:
 		var batch=Batch.new(); batch.configure(art.building_sheets[f],180); batch.z_index=-5; world_root.add_child(batch); building_batches.append(batch)
-	unit_batch=Batch.new(); unit_batch.configure(art.units,360); unit_batch.z_index=-4; world_root.add_child(unit_batch)
-	utility_batch=Batch.new(); utility_batch.configure(art.utility,360); utility_batch.z_index=-4; world_root.add_child(utility_batch)
+	unit_batch=Batch.new(); unit_batch.configure(art.units,360,true); unit_batch.z_index=-4; world_root.add_child(unit_batch)
+	utility_batch=Batch.new(); utility_batch.configure(art.utility,360,true); utility_batch.z_index=-4; world_root.add_child(utility_batch)
 	fog_sprite=Sprite2D.new(); fog_sprite.centered=false; fog_sprite.z_index=-2; world_root.add_child(fog_sprite)
 
 func uv_region(index: int,cols: int,rows: int) -> Rect2:
@@ -107,17 +107,18 @@ func update_batches():
 			var direction=posmod(roundi(e.angle/(TAU/8)),8)
 			if e.kind in ["mcv","worker","buggy"]:
 				row=faction+(3 if e.kind=="buggy" else 0)
-				utility_batch.put(e.p+Vector2(0,-width*.26+bob),Vector2.ONE*width,uv_region(row*8+direction,8,6))
+				utility_batch.put(e.p+Vector2(0,-width*.26+bob),Vector2.ONE*width,uv_region(row*8+direction,8,6),team_color(e.owner))
 			else:
-				unit_batch.put(e.p+Vector2(0,-width*.26+bob),Vector2.ONE*width,uv_region(row*8+direction,8,6))
+				unit_batch.put(e.p+Vector2(0,-width*.26+bob),Vector2.ONE*width,uv_region(row*8+direction,8,6),team_color(e.owner))
 	unit_batch.finish()
 	utility_batch.finish()
 	for batch in building_batches: batch.finish()
 
 func unit_width(e: Dictionary,faction: int) -> float:
-	if not e.d.get("biological",false): return 82.0 if e.kind in ["tank","mcv","siege"] else 65.0
-	if e.kind=="hero": return 49.0
-	return 47.0 if faction==1 else 40.0
+	var width=106.0 if e.kind in ["tank","mcv","siege"] else 88.0
+	if e.d.get("biological",false): width=76.0 if e.kind=="hero" else (70.0 if faction==1 else 64.0)
+	# Keep infantry readable even at the furthest strategic zoom.
+	return maxf(width,38.0/zoom)
 
 func make_terrain():
 	var resolution=32
@@ -276,7 +277,7 @@ func draw_entity(e: Dictionary):
 
 func draw_minimap():
 	var r=minimap_rect()
-	draw_rect(Rect2(Vector2(viewport_size().x-336,66),Vector2(336,253)),INK)
+	draw_rect(Rect2(Vector2(viewport_size().x-336,66),Vector2(336,193)),INK)
 	text_at(r.position+Vector2(0,-15),"REDE TÁTICA",12,MINT)
 	text_at(r.position+Vector2(176,-15),"SETOR / AO VIVO",10,Color("708d83"))
 	draw_rect(r,Color("172a27"))
@@ -291,17 +292,23 @@ func draw_sprite_markers(e: Dictionary):
 	var col=team_color(e.owner)
 	var faction=sim.teams[e.owner].faction if e.owner>=0 else 1
 	var width=140.0 if e.building else unit_width(e,faction)
-	if chosen: draw_arc(Vector2.ZERO,e.d.radius+9,0,TAU,20,col,1.5)
+	if not e.building:
+		var radius=maxf(e.d.radius+6,12/zoom)
+		draw_arc(Vector2.ZERO,radius,0,TAU,24,Color("081319"),5/zoom)
+		draw_arc(Vector2.ZERO,radius,0,TAU,24,col,2/zoom)
+	if chosen: draw_arc(Vector2.ZERO,e.d.radius+13,0,TAU,28,Color.WHITE,2/zoom)
 	if e.kind=="mcv": text_at(Vector2(-7,-width*.74),"D",15,col)
-	if chosen and not e.building:
-		var badge={"heavy":"▲","medic":"+","hero":"★","special":"◆","worker":"S"}.get(e.kind,"")
-		if badge!="": text_at(Vector2(-4,-width*.74-3),badge,10,GOLD if e.kind=="hero" else col)
+	if not e.building:
+		var badge={"rifle":"•","scout":"»","heavy":"▲","sniper":"+","medic":"+","engineer":"E","hero":"★","elite":"★","special":"◆","worker":"S","tank":"▲","siege":"◆","buggy":"»"}.get(e.kind,"")
+		if badge!="":
+			draw_circle(Vector2(width*.27,-width*.35),9/zoom,Color("081319"))
+			text_at(Vector2(width*.27-5/zoom,-width*.35+5/zoom),badge,int(14/zoom),GOLD if e.kind=="hero" else col)
 	if e.disabled>0: text_at(Vector2(-12,-width*.75),"EMP",11,Color("c0a3f4"))
-	if chosen or e.hp<e.max_hp or e.build>0:
-		var w=60 if e.building else 28
+	if chosen or not e.building or e.hp<e.max_hp or e.build>0:
+		var w=60 if e.building else maxf(36,28/zoom)
 		var y=-width*.8
-		draw_rect(Rect2(-w/2,y,w,3),Color("0b1617"))
-		draw_rect(Rect2(-w/2,y,w*maxf(0,e.hp/e.max_hp),3),col if e.hp/e.max_hp>.3 else Color("e97963"))
+		draw_rect(Rect2(-w/2-1/zoom,y-1/zoom,w+2/zoom,6/zoom),Color("050b10"))
+		draw_rect(Rect2(-w/2,y,w*maxf(0,e.hp/e.max_hp),4/zoom),col if e.hp/e.max_hp>.3 else Color("e97963"))
 		if e.build>0:
 			draw_rect(Rect2(-w/2,y+5,w*(1-e.build/e.d.time),3),GOLD)
 			text_at(Vector2(-15,y-7),"%d s" % ceil(e.build),12,GOLD)

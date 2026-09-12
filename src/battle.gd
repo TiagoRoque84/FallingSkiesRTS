@@ -40,6 +40,8 @@ var building_cache: Array=[]
 
 func start(options: Dictionary):
 	config=options.duplicate(true)
+	# Elimination always requires the entire army and every structure.
+	config.victory=0
 	config.enemies=clampi(config.enemies,1,int(catalog.maps[config.map].max_enemies))
 	rng.seed=config.get("seed",83421)
 	map=MapData.new()
@@ -598,13 +600,12 @@ func update_points(dt: float):
 			if point.owner==i or (config.get("coalition",false) and i>0 and point.owner>0): controlled+=1
 		if config.get("victory",0)==1 and controlled>map.points.size()/2.0: teams[i].domination+=dt
 		else: teams[i].domination=0
-		if teams[i].domination>=config.get("domination_time",180): finish(i)
 
 func check_end():
 	if finished: return
 	for owner in teams.size():
 		if not teams[owner].alive: continue
-		if own(owner,"hq").is_empty() and own(owner,"mcv").is_empty():
+		if not own(owner).any(func(e):return e.hp>0):
 			teams[owner].alive=false
 			for point in map.points:
 				if point.owner==owner: point.owner=-1; point.progress=0
